@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs');
 
-var generators = require('annogenerate');
+var generators = require('annogenerate'); // TODO: pass custom randint here (deterministic)
 var generateParams = require('annofuzz')(generators).generate;
 var compile = require('handlebars').compile;
 var is = require('annois');
