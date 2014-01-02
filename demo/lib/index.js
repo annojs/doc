@@ -10,7 +10,8 @@ exports.addStrings = annotate('addStrings', 'Adds strings').on(is.string, is.str
 
 // you can assert invariants too
 exports.addPositive = annotate('addPositive', 'Adds positive').
-    on(isPositive, isPositive, add).satisfies(isPositive); // postcondition
+    on(isPositive, is.number, add).
+    on(isPositive, isPositive, add).satisfies(is.number); // postcondition
 
 // it is possible to chain guards
 /*
@@ -34,6 +35,7 @@ exports.clamp = annotate('clamp', 'Clamps given number between given bounds').
     });
 
 // furthermore it is possible to pass a variable amount of args
+// TODO: figure out how to limit amount of maximum args in examples
 exports.min = annotate('min', 'Returns minimum of the given numbers').
     on([is.number], Math.min);
 

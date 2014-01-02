@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 var fs = require('fs');
 
-var random = require('seed-random')('foobar');
+var random = require('seed-random')('baz');
 
+var fp = require('annofp');
 var math = require('annomath');
 var generators = require('annogenerate')(function(min, max) {
-    return math.randint(min, 10, random);
+    return math.randint(min, max, random);
 });
 patchGenerators(generators);
 
@@ -21,10 +22,15 @@ function main() {
     fs.readFile('./_layouts/_README.md', {
         encoding: 'utf-8'
     }, function(err, d) {
-        if(err) return console.error(err);
+        if(err) {
+            return console.error(err);
+        }
 
         var ctx = {
-            functions: generate(lib)
+            functions: generate({
+                module: lib,
+                examples: 4
+            })
         };
         var tpl = compile(d);
         var result = tpl(ctx);
@@ -46,23 +52,26 @@ function patchGenerators() {
     generators.string = generators.string.bind(null, 10);
 }
 
-// TODO: allow amount of examples to generated to be configured
-function generate(module) {
-    return Object.keys(module).map(function(k) {
-        var fn = module[k];
+function generate(o) {
+    return Object.keys(o.module).map(function(k) {
+        var fn = o.module[k];
 
         return {
             name: fn._name,
             description: fn._doc,
-            examples: generateExamples(fn, fn._name, fn._preconditions)
+            examples: generateExamples(o.examples, fn, fn._name, fn._preconditions)
             // preconditions - TODO
             // postconditions - TODO
         };
     });
 }
 
-function generateExamples(fn, name, preconditions) {
-    return preconditions.map(generateExample.bind(null, fn, name));
+function generateExamples(amount, fn, name, preconditions) {
+    var times = Math.ceil(amount / preconditions.length);
+
+    return fp.flatten(math.range(times).map(function() {
+        return preconditions.map(generateExample.bind(null, fn, name));
+    })).slice(0, amount);
 }
 
 function generateExample(fn, name, precondition) {
@@ -72,6 +81,7 @@ function generateExample(fn, name, precondition) {
         params = params[0];
     }
 
+    // TODO: add quotes to string params
     return {
         call: name + '(' +  params.join(', ') + ')',
         result: fn.apply(null, params)
