@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 var fs = require('fs');
 
-var generators = require('annogenerate'); // TODO: pass custom randint here (deterministic)
+var random = require('seed-random')('foobar');
+
+var math = require('annomath');
+var generators = require('annogenerate')(function(min, max) {
+    return math.randint(min, 10, random);
+});
+patchGenerators(generators);
+
 var generateParams = require('annofuzz')(generators).generate;
 var compile = require('handlebars').compile;
 var is = require('annois');
@@ -11,8 +18,6 @@ var lib = require('./lib');
 main();
 
 function main() {
-    patchGenerators(generators);
-
     fs.readFile('./_layouts/_README.md', {
         encoding: 'utf-8'
     }, function(err, d) {

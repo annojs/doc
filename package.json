@@ -28,11 +28,13 @@
   ],
   "devDependencies": {
     "annotate": "0.9.0",
-    "annogenerate": "0.7.0"
+    "annogenerate": "0.7.1",
+    "seed-random": "2.2.0",
+    "annomath": "0.3.2"
   },
   "dependencies": {
     "annois": "0.3.0",
     "handlebars": "1.3.0",
-    "annofuzz": "0.4.4"
+    "annofuzz": "0.4.6"
   }
 }
