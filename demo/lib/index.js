@@ -9,7 +9,7 @@ exports.addNumbers = annotate('addNumbers', 'Adds numbers').on(is.number, is.num
 exports.addStrings = annotate('addStrings', 'Adds strings').on(is.string, is.string, add);
 
 // you can assert invariants too
-exports.addPositive = annotate('addPositive', 'Adds positive').
+exports.addPositive = annotate('addPositive', 'Adds positives').
     on(isPositive, is.number, add).
     on(isPositive, isPositive, add).satisfies(is.number); // postcondition
 
